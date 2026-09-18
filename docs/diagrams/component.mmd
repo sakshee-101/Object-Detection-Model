@@ -1,0 +1,68 @@
+classDiagram
+    class Camera {
+        +int frames_read
+        +bool is_file_source
+        +bool is_open
+        +open() Camera
+        +read() tuple
+        +release() None
+        +describe() str
+    }
+
+    class Detector {
+        +str model_path
+        +float confidence
+        +str device
+        +load() Detector
+        +detect(frame) list
+        +set_confidence(value) float
+        +class_names dict
+        +is_loaded bool
+    }
+
+    class Detection {
+        +int class_id
+        +str class_name
+        +float confidence
+        +tuple box
+        +label str
+    }
+
+    class FpsCounter {
+        +int frames
+        +tick(now) float
+        +fps float
+        +reset() None
+    }
+
+    class SessionStats {
+        +int frames
+        +int total_detections
+        +int peak_objects
+        +update(detections, fps) None
+        +reset() None
+        +most_frequent_class() tuple
+        +summary() list
+        +as_dict() dict
+    }
+
+    class Renderer {
+        +int box_thickness
+        +draw_detections(frame, detections) None
+        +draw_stats(frame, ...) None
+        +draw_help(frame, lines) None
+    }
+
+    class Action {
+        <<enumeration>>
+        QUIT
+        SNAPSHOT
+        RESET_STATS
+        CONFIDENCE_UP
+        CONFIDENCE_DOWN
+    }
+
+    Detector --> Detection : creates
+    FpsCounter --> SessionStats : feeds
+    Renderer --> Detection : draws
+    Camera --> Detector : frame

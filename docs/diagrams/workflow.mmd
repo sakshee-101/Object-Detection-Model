@@ -1,0 +1,37 @@
+flowchart TD
+    Start([Start]) --> Args["Read command line arguments"]
+    Args --> Load["Load the YOLO11n model"]
+    Load --> Open{"Camera opens?"}
+
+    Open -->|No| Error["Print an error message<br/>and exit"]
+    Error --> Stop([End])
+
+    Open -->|Yes| Loop["Read a frame from the webcam"]
+    Loop --> Empty{"Frame read<br/>successfully?"}
+
+    Empty -->|No| Lost{"Too many failed<br/>reads in a row?"}
+    Lost -->|No| Loop
+    Lost -->|Yes| Shutdown
+
+    Empty -->|Yes| Detect["Run YOLO11n inference"]
+    Detect --> Stats["Update FPS and object counts"]
+    Stats --> Draw["Draw boxes, labels and statistics"]
+    Draw --> Show["Show the frame in the OpenCV window"]
+    Show --> Key["Check for a key press"]
+
+    Key --> Quit{"Q or ESC<br/>pressed?"}
+    Quit -->|No| Loop
+    Quit -->|Yes| Shutdown
+
+    Shutdown["Release the camera and close the window"]
+    Shutdown --> Print["Print the session summary"]
+    Print --> Save["Write outputs/session_summary.json"]
+    Save --> Stop
+
+    classDef mine fill:#1f3b57,stroke:#7fb2e5,color:#ffffff
+    classDef stop fill:#2f4a2f,stroke:#9fe59f,color:#ffffff
+    classDef bad fill:#4a1f1f,stroke:#e57f7f,color:#ffffff
+
+    class Args,Load,Loop,Detect,Stats,Draw,Show,Key,Shutdown,Save,Print mine
+    class Start,Stop stop
+    class Error bad

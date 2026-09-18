@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor User
+    participant Main as app/main.py
+    participant Camera as app/camera.py
+    participant Detector as app/detector.py
+    participant Analytics as app/analytics.py
+    participant Renderer as app/renderer.py
+
+    User->>Main: python -m app
+    Main->>Detector: load()
+    Detector-->>Main: model ready
+    Main->>Camera: open()
+    Camera-->>Main: camera ready
+
+    loop Every frame, until Q or ESC
+        Main->>Camera: read()
+        Camera-->>Main: frame
+        Main->>Detector: detect(frame)
+        Detector-->>Main: list of Detection
+        Main->>Analytics: update(detections, fps)
+        Analytics-->>Main: FPS and class counts
+        Main->>Renderer: draw_detections, draw_stats, draw_help
+        Renderer-->>Main: annotated frame
+        Main->>User: show the frame in the OpenCV window
+        User-->>Main: key press
+    end
+
+    Main->>Camera: release()
+    Main->>User: print the session summary

@@ -1,0 +1,33 @@
+flowchart TD
+    User([User]) -->|"python -m app"| Main
+
+    Main["app/main.py<br/>argument parsing + main loop"]
+
+    Main --> Camera["app/camera.py<br/>Camera"]
+    Main --> Detector["app/detector.py<br/>Detector"]
+    Main --> Analytics["app/analytics.py<br/>FpsCounter, SessionStats"]
+    Main --> Controls["app/controls.py<br/>key handling"]
+    Main --> Renderer["app/renderer.py<br/>Renderer"]
+
+    Camera -->|"frame"| Detector
+    Detector -->|"list of Detection"| Analytics
+    Detector -->|"list of Detection"| Renderer
+    Analytics -->|"FPS and counts"| Renderer
+    Renderer -->|"annotated frame"| Main
+    Controls -->|"Action"| Main
+
+    Detector --> YOLO["YOLO11n<br/>pretrained model<br/>(third-party: Ultralytics)"]
+
+    Main --> Window["OpenCV window<br/>live annotated video"]
+    Main --> Files["outputs/<br/>snapshot_*.jpg<br/>session_summary.json"]
+
+    Window --> User
+    Files --> User
+
+    classDef mine fill:#1f3b57,stroke:#7fb2e5,color:#ffffff
+    classDef third fill:#4a2f1f,stroke:#e5b57f,color:#ffffff
+    classDef user fill:#2f4a2f,stroke:#9fe59f,color:#ffffff
+
+    class Main,Camera,Detector,Analytics,Controls,Renderer,Window,Files mine
+    class YOLO third
+    class User user

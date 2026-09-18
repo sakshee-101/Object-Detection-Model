@@ -1,0 +1,15 @@
+# Real-Time Object Detection Using YOLO11
+# Install with:  pip install -r requirements.txt
+
+# Ultralytics provides the pretrained YOLO11 model and the inference API.
+# It also installs PyTorch, which performs the actual inference.
+ultralytics>=8.3.0
+
+# OpenCV handles webcam capture, drawing and the display window.
+opencv-python>=4.9.0
+
+# NumPy is used for the frame buffers.
+numpy>=1.24
+
+# pytest runs the unit test suite.
+pytest>=7.4
